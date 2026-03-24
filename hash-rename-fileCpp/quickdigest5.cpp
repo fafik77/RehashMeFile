@@ -253,13 +253,5 @@ std::string Hash::MD5::DigestHashAsString(const std::vector<uint8_t>& digest)
 
 std::string MD5::fileToHash(const std::string& filepath) {
 	std::vector<uint8_t> digest = MD5::digestFile(filepath);
-	std::stringstream ss;
-
-	for(int i = 0; i < 16; ++i)
-		ss << std::hex
-			<< std::setw(2)
-			<< std::setfill('0')
-			<< (int) digest[(size_t) i];
-
-	return ss.str();
+	return DigestHashAsString(digest);
 }
