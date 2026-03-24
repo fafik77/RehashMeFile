@@ -137,6 +137,17 @@ namespace Hash {
 			const uint8_t* inputBuffer,
 			size_t inputLength
 		);
+		/**
+		 * @brief Updates the internal state with input data.
+		 * @param inputBuffer A pointer to the input data buffer.
+		 * @param inputLength The length of the input data in bytes.
+		 */
+		void update(
+			const void* inputBuffer,
+			size_t inputLength
+		){
+			update((const uint8_t*)inputBuffer, inputLength);
+		}
 	public:
 		/**
 		 * @brief Computes the MD5 hash of a string.

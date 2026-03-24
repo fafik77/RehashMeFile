@@ -138,7 +138,7 @@ void MD5::update(const uint8_t* inputBuffer, size_t inputLength) {
 
 		ProcessBlock(block);
 	}
-	offset = 0;
+
 	for (; inputPos < inputLength; ++inputPos) { //save the remaning bytes for next time
 		this->input[offset++] = inputBuffer[inputPos];
 	}
