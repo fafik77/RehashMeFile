@@ -148,6 +148,9 @@
   <ItemGroup>
     <ResourceCompile Include="hash-rename-fileCpp.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon\RehashMeFile.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

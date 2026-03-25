@@ -1,2 +1,0 @@
-https://github.com/nthnn/QuickDigest5	MD5 hashing
-Oryx Embedded SARL (www.oryx-embedded.com)	MD5 hashing
