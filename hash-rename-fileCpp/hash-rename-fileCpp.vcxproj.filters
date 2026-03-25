@@ -24,9 +24,6 @@
     <ClCompile Include="quickdigest5.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DirectoryExplorer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenameFilesMain.h">
@@ -38,7 +35,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DirectoryExplorer.h">
+    <ClInclude Include="DirectoryExplorer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

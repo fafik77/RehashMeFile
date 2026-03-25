@@ -123,13 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DirectoryExplorer.cpp" />
     <ClCompile Include="hash-rename-fileCpp.cpp" />
     <ClCompile Include="quickdigest5.cpp" />
     <ClCompile Include="RenameFilesMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectoryExplorer.h" />
+    <ClInclude Include="DirectoryExplorer.hpp" />
     <ClInclude Include="quickdigest5.hpp" />
     <ClInclude Include="RenameFilesMain.h" />
     <ClInclude Include="resource.h" />

@@ -6,9 +6,21 @@
 #include <string>
 #include <functional>
 
+// Examples:
+// Count matching files in directory
+//  int sum = 0;
+//  DirectoryExplorer<int> dirExpInt(&sum);
+//  dirExpInt.GetFilesIn(L".", 0, [](int& sum, const std::wstring& directoryPath, const WIN32_FIND_DATAW& data) {sum++;});
+// Use own class to implement actuall logic:
+//  DirectoryExplorer<RenameFilesMain> dirExp(this);
+//  dirExp.GetFilesIn(L".", 0, &RenameFilesMain::ProcessFile);
+//   where: void RenameFilesMain.ProcessFile(const std::wstring& directoryPath, const WIN32_FIND_DATAW& data);
+// 
+
+
 /**
  * @brief Template class that explores directory tree.
- * @tparam T Type of the object instance stored and used by callbacks to invoke actions on persistent data.
+ * @tparam T Type of the object instance stored and used by callbacks to invoke actions on persistent data. It can be your Class with methods to handle `ActionOnFile`
  */
 template <typename T>
 class DirectoryExplorer
@@ -16,15 +28,23 @@ class DirectoryExplorer
 	T* instace;
 public:
 	/**
-	 * @brief Makes the concrete implementation with instace that can persist your data,
+	 * @brief init with instace that can persist your data.
 	 * @param instace !!! the instance is managed by the caller, it can be a ref to self (this)
 	 */
 	DirectoryExplorer(T* instace):
 		instace(instace)
 	{ }
-	
+	/**
+	 * @brief Action to perform on each file in GetFilesIn
+	 */
 	using ActionOnFile = std::function<void(T& instance, const std::wstring& directoryPath, const WIN32_FIND_DATAW& data)>;
 
+	/**
+	 * @brief Get all items (Files and Folders) inside a directory, run actionOnFile on each File(only)
+	 * @param path -start at given path, should be path only without slash at the end and no wildcards
+	 * @param recursiveDepth -enter sub directories up to said depth(stops at == 0)
+	 * @param actionOnFile -perform action on file
+	 */
 	void GetFilesIn(const std::wstring& path, const int recursiveDepth = 0, ActionOnFile actionOnFile = nullptr);
 };
 

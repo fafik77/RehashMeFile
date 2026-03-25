@@ -7,13 +7,11 @@
 ///
 
 #include "RenameFilesMain.h"
-#include "DirectoryExplorer.h"
 
 
 int main(int argc, char* argv[])
 {
 	RenameFilesMain renameFiles(argc, argv);
-	DirectoryExplorer dirExp;
-	dirExp.GetFilesIn<int>(L".", 0);
+	renameFiles.run();
 }
 
