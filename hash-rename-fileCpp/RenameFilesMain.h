@@ -3,6 +3,7 @@
 #include <regex>
 #include <sstream>
 #include "DirectoryExplorer.hpp"
+#include "ThreadPool.hpp"
 
 /**
  * @brief This class is the main point for discovering and filtering files to be renamed by their MD5 hash
@@ -20,6 +21,7 @@ class RenameFilesMain
 	std::wregex regexExtensionMatch = std::wregex(L".*\\.(png|jpg|jpeg|gif|tif|tiff)$", std::regex_constants::syntax_option_type::icase);
 	bool doNotRehash = true;
 	int scanDepth = 0;
+	ThreadPool threadPool;
 
 
 	/**
@@ -37,7 +39,8 @@ class RenameFilesMain
 	void ProcessFile(const std::wstring& directoryPath, const WIN32_FIND_DATAW& data);
 
 public:
-	RenameFilesMain(int argc, char* argv[]) {
+	RenameFilesMain(int argc, char* argv[])
+	{
 		int retVal = ParseCmdArgs(argc, argv);
 		if (retVal) exit(retVal);
 	}

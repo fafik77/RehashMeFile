@@ -1,18 +1,22 @@
 #include "RenameFilesMain.h"
 #include "quickdigest5.hpp"
+#include "AutoHandle.hpp"
+#include <filesystem>
 
 using namespace std;
+namespace fs = std::filesystem;
+
 
 int RenameFilesMain::ParseCmdArgs(int argc, char* argv[])
 {
 	for (int i = 1; i < argc; ++i) {
 		string arg(argv[i]);
 		if (arg == "/?" || arg == "/help") {
-			printf("Hash rename files by fafik77 on github. On 24.03.2026:\n "
-				"/rehash\t by default files named with MD5 hash will not be renamed, this option will rename the file always\n"
-				"/r\t recurse all subfolders\n"
-				"/depth <int>\t recurse subfolders up to depth\n"
-				"/ext \"comma or space separated string\"\t provide file extensions to work on. Default is (png,jpg,jpeg,gif,tif,tiff)\n"
+			printf("Hash rename files by fafik77 on github. On 24.03.2026:\n"
+				" /rehash\t -by default files named with MD5 hash will not be renamed, this option will rename the file always\n"
+				" /r\t\t -recurse all subfolders\n"
+				" /depth <int>\t -recurse subfolders up to depth\n"
+				" /ext \"str\"\t -provide file extensions to work on. Default is \"png,jpg,jpeg,gif,tif,tiff\"\n"
 			);
 			return 1;
 		}
@@ -37,7 +41,7 @@ int RenameFilesMain::ParseCmdArgs(int argc, char* argv[])
 
 		else if (arg == "/ext") {
 			if (i + 1 < argc) {
-				regex wordRegex("[a-zA-Z0-9_-]+");
+				regex wordRegex("[a-zA-Z0-9_!@#$~-]+");
 				string extArgStr(argv[++i]);
 				vector<string> fileExtensions;
 
@@ -75,15 +79,37 @@ int RenameFilesMain::ParseCmdArgs(int argc, char* argv[])
 	return 0;
 }
 
+static const uint64_t MB = 1 << 20;
+
 void RenameFilesMain::ProcessFile(const std::wstring& directoryPath, const WIN32_FIND_DATAW& data)
 {
 	std::wstring fileName(data.cFileName);
-	if (fileName.empty()) throw std::exception("File name is empty, Failed to assign?");
-	if (doNotRehash && regex_match(fileName, regexMd5Named)) //already hash named and no rehash is selected
+	if (fileName.empty()) throw std::exception("File name is empty, that is illegal. Failed to assign?");
+	if (doNotRehash && regex_match(fileName, regexMd5Named)) //already hash named and "no rehash" is selected
 		return;
 	if (!regex_match(fileName, regexExtensionMatch)) //not our extension
 		return;
 
-	Hash::MD5 md5;
+	
+	threadPool.enqueue([directoryPath, fileName]() {	//capture a copy of those to process in pararell
+		Hash::MD5 md5;
+		fs::path pathOldName(directoryPath);
+		pathOldName.append(fileName);
+		AutoHandle hFile = CreateFileW(pathOldName.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, NULL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+			return;
+		
+		vector<uint8_t> buf(MB, 0x00);
+		DWORD read;
+		while (ReadFile(hFile, &buf.front(), MB, &read, NULL) && read != 0) {
+			md5.update(&buf.front(), read);
+		}
+		hFile.Close();	//we have to close it to rename it
+		auto hash = md5.FinalizeHash();
+		wstring hashW(hash.begin(), hash.end());
+		fs::path pathNewName(directoryPath);
+		pathNewName.append(hashW + pathOldName.extension().wstring());
+		fs::rename(pathOldName, pathNewName);
+	});
 	wprintf(L"File: %s\n", fileName.c_str());
 }
