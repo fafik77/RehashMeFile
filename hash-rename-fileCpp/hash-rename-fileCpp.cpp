@@ -13,23 +13,10 @@
 int main(int argc, char* argv[])
 {
 	RenameFilesMain renameFiles(argc, argv);
-	Hash::MD5 md5, test, test2;
-	//auto res = md5.fileToHash(R"(V:\a\b4abc8a33be779e9fc4c2c740462c580.jpg)");	//b4abc8a33be779e9fc4c2c740462c580
-	//printf("%s", res.c_str());
-
-	std::string testStr = "test";
-	test.update(&testStr.front(), testStr.size());
-	auto res2 = test.FinalizeHash();	//098f6bcd4621d373cade4e832627b4f6
-
-	test2.update(&testStr.at(0), 1);
-	test2.update(&testStr.at(1), 1);
-	test2.update(&testStr.at(2), 1);
-	test2.update(&testStr.at(3), 1);
-	auto res3 = test2.FinalizeHash();	//098f6bcd4621d373cade4e832627b4f6
 }
 
 
-//void FindFilesIn(const std::wstring& path)
+//void FindFilesIn(const std::wstring& path, const int depth)
 //{
 //	WIN32_FIND_DATA data;
 //	HANDLE hFind = FindFirstFileW(path.c_str(), &data);      // DIRECTORY

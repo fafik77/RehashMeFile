@@ -118,16 +118,16 @@ void Hash::MD5::ProcessBlock(std::vector<uint32_t>& block)
 }
 
 void MD5::update(const uint8_t* inputBuffer, size_t inputLength) {
-	uint32_t offset = size % 64;
 	this->size += inputLength;
 	std::vector<uint32_t> block(16);
 	size_t inputPos = 0;
 
 	if (offset != 0) {	//fill in the input buffer from previous time
-		for (; inputPos < inputLength; ++inputPos) {
-			this->input[offset++] = inputBuffer[inputPos];
+		for (; inputPos < inputLength; ) {
+			this->input[offset++] = inputBuffer[inputPos++];
 			if (offset % 64 == 0) {
 				ProcessBlock(block);
+				offset = 0;
 				break;
 			}
 		}
@@ -139,16 +139,20 @@ void MD5::update(const uint8_t* inputBuffer, size_t inputLength) {
 		ProcessBlock(block);
 	}
 
-	for (; inputPos < inputLength; ++inputPos) { //save the remaning bytes for next time
-		this->input[offset++] = inputBuffer[inputPos];
+	for (; inputPos < inputLength; ) { //save the remaning bytes for next time
+		this->input[offset++] = inputBuffer[inputPos++];
+		if (offset % 64 == 0) {
+			ProcessBlock(block);
+			offset = 0;
+			break;
+		}
 	}
 }
 
 
 
 void MD5::finalize() {
-	uint32_t offset = size % 64,
-		padding_length = offset < 56 ?
+	uint32_t padding_length = offset < 56 ?
 			56 - offset :
 			120 - offset;
 
@@ -189,7 +193,8 @@ MD5::MD5() :
 	size(0),
 	buffer(4),
 	input(64),
-	digest(16)
+	digest(16),
+	offset(0)
 {
 	buffer[0] = 0x67452301;
 	buffer[1] = 0xefcdab89;

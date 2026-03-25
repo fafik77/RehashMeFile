@@ -72,6 +72,8 @@ namespace Hash {
 		 * @brief Stores the resulting MD5 hash.
 		 */
 		std::vector<uint8_t> digest;
+		/// offset at which to place the next data
+		uint32_t offset = 0;
 
 		/**
 		 * @brief Padding used during MD5 computation.
