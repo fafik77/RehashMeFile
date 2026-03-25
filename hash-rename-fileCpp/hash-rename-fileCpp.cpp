@@ -7,18 +7,13 @@
 ///
 
 #include "RenameFilesMain.h"
-#include "quickdigest5.hpp"
+#include "DirectoryExplorer.h"
 
 
 int main(int argc, char* argv[])
 {
 	RenameFilesMain renameFiles(argc, argv);
+	DirectoryExplorer dirExp;
+	dirExp.GetFilesIn<int>(L".", 0);
 }
 
-
-//void FindFilesIn(const std::wstring& path, const int depth)
-//{
-//	WIN32_FIND_DATA data;
-//	HANDLE hFind = FindFirstFileW(path.c_str(), &data);      // DIRECTORY
-//
-//}
